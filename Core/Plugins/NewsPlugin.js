@@ -1,0 +1,66 @@
+const Config = require('./../../senti.config.js');
+
+const NewsAPI = require('newsapi');
+
+const Plugin = require('./Plugin');
+const Stream = require('./../Utilities/Stream');
+
+class NewsPlugin extends Plugin {
+
+    constructor() {
+
+        super(...arguments);
+        this.client = new NewsAPI(Config.NewsAPI.api_key);
+
+    }
+
+    postprocess(articles) {
+
+        return articles.map(article => {
+            return {
+                text: article.title + '. ' + article.description,
+                metadata: {
+                    type: 'senti.news',
+                    ...article
+                }
+            }
+        });
+
+    }
+
+    search(terms, options) {
+
+        terms = terms instanceof Array ? terms.join(' OR ') : terms;
+        options = options || {};
+
+        let processedResults = 0;
+        return new Stream((give, reject, terminate, next) => {
+            let params = Object.assign(options, { q: terms, page: 1, pageSize: 5 });
+
+            const handle = (response) => {
+                if (response.status === 'error') {
+                    reject(response);
+                } else {
+                    give(this.postprocess(response.articles));
+
+                    processedResults += response.articles.length;
+                    if (response.totalResults > processedResults) {
+                        params.page++;
+
+                        next(() => {
+                            this.client.v2.everything(params).then(handle);
+                        });
+                    } else {
+                        terminate();
+                    }
+                }
+            }
+
+            this.client.v2.everything(params).then(handle);
+        });
+
+    }
+
+}
+
+module.exports = NewsPlugin;
