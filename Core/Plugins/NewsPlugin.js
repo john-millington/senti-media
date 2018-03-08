@@ -80,7 +80,7 @@ class NewsPlugin extends Plugin {
         }
 
         if (options.country) {
-            rectified.sources = _.filter(NewsSources.sources, source => source.country = options.country).map(source => source.id).join(',');
+            rectified.sources = _.filter(NewsSources.sources, source => source.country === options.country).map(source => source.id).join(',');
         }
 
         return rectified;
