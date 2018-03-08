@@ -6,6 +6,8 @@ const qs = require('qs');
 const Plugin = require('./Plugin');
 const Stream = require('./../Utilities/Stream');
 
+const DEFAULT_PAGE_SIZE = 100;
+
 class TwitterPlugin extends Plugin {
 
     constructor() {
@@ -50,13 +52,12 @@ class TwitterPlugin extends Plugin {
 
     }
 
-    search(terms, options) {
+    search(terms, options = {}) {
 
         terms = terms instanceof Array ? terms.join(' ') : terms;
-        options = options || {};
 
         return new Stream((give, reject, terminate, next) => {
-            let params = Object.assign(options, { q: terms, tweet_mode: 'extended' });
+            let params = Object.assign(this.transform(options), { q: terms, tweet_mode: 'extended' });
 
             const handle = (error, tweets) => {
                 if (error) {
@@ -79,6 +80,31 @@ class TwitterPlugin extends Plugin {
 
             this.client.get('search/tweets', params, handle);
         });
+
+    }
+
+    transform(options = {}) {
+
+        let rectified = {
+            lang: options.language,
+            count: options.count || DEFAULT_PAGE_SIZE
+        };
+
+        if (options.from) {
+            rectified.from = options.from.toISOString();
+        }
+
+        if (options.to) {
+            rectified.until = options.to.toISOString().split('T')[0];
+        }
+
+        // TODO - Use twitter geo api to get place id for country search
+        // https://stackoverflow.com/questions/17633378/how-can-we-get-tweets-from-specific-country
+        // if (options.country) {
+
+        // }
+
+        return rectified;
 
     }
 

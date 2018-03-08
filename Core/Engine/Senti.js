@@ -79,8 +79,8 @@ class Senti {
             processed[result.index].senti.push({
                 Text: result.chunk,
                 Sentiment: {
-                    prediction: result.sentiment.Sentiment,
-                    scores: result.sentiment.SentimentScore
+                    Prediction: result.sentiment.Sentiment,
+                    Scores: result.sentiment.SentimentScore
                 },
                 KeyPhrases: result.phrases && result.phrases.KeyPhrases || [],
                 Topics: result.topics
