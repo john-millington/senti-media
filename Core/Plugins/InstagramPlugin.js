@@ -17,10 +17,9 @@ class InstagramPlugin extends Plugin {
 
     }
 
-    search(terms, options) {
+    search(terms, options = {}) {
 
         terms = terms instanceof Array ? terms.join(' ') : terms;
-        options = options || {};
 
         return new Stream((give, reject, terminate, next) => {
             const handle = (data, error) => {

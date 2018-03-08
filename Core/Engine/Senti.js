@@ -33,16 +33,23 @@ class Senti {
                     ErrorList = [];
 
                 response.forEach((item, position) => {
-                    item.ResultList.forEach(result => {
-                        result.Index = (position * limit) + result.Index;
-                    });
+                    let itemResultList = item && item.ResultList;
+                    if (itemResultList) {
+                        itemResultList.forEach(result => {
+                            result.Index = (position * limit) + result.Index;
+                        });
 
-                    item.ErrorList.forEach(error => {
-                        error.Index = (position * limit) + error.Index;
-                    });
+                        ResultList = [...ResultList, ...itemResultList];
+                    }
 
-                    ResultList = [...ResultList, ...item.ResultList];
-                    ErrorList = [...ErrorList, ...item.ErrorList];
+                    let itemErrorList = item && item.ErrorList;
+                    if (itemErrorList) {
+                        itemErrorList.forEach(error => {
+                            error.Index = (position * limit) + error.Index;
+                        });
+
+                        ErrorList = [...ErrorList, ...itemErrorList];
+                    }
                 });
 
                 resolve({
@@ -79,8 +86,8 @@ class Senti {
             processed[result.index].senti.push({
                 Text: result.chunk,
                 Sentiment: {
-                    prediction: result.sentiment.Sentiment,
-                    scores: result.sentiment.SentimentScore
+                    Prediction: result.sentiment.Sentiment,
+                    Scores: result.sentiment.SentimentScore
                 },
                 KeyPhrases: result.phrases && result.phrases.KeyPhrases || [],
                 Topics: result.topics
@@ -114,12 +121,12 @@ class Senti {
                 });
 
                 this.batch(this.service.batchDetectKeyPhrases, this.service, processed, AWS_TEXT_LIST_LIMIT).then(phrases => {
-                    phrases.ResultList.forEach(phrase => {
+                    phrases && phrases.ResultList.forEach(phrase => {
                         results[phrase.Index].phrases = phrase;
                     });
 
                     this.batch(this.service.batchDetectSentiment, this.service, processed, AWS_TEXT_LIST_LIMIT).then(sentiments => {
-                        sentiments.ResultList.forEach(sentiment => {
+                        sentiments && sentiments.ResultList.forEach(sentiment => {
                             results[sentiment.Index].sentiment = sentiment;
                         });
 
