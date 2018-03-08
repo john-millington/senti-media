@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 const Senti = require('./Senti');
-const Stream = require('./../Utilities/Stream');
+const Stream = require('./../utilities/Stream');
 
 class Engine {
 

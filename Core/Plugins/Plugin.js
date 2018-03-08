@@ -1,4 +1,4 @@
-const Stream = require('./../Utilities/Stream');
+const Stream = require('./../utilities/Stream');
 
 class Plugin {
 

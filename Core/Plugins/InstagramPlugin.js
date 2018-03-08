@@ -3,7 +3,7 @@ const Config = require('./../../senti.config.js');
 const Instagram = require('instagram');
 
 const Plugin = require('./Plugin');
-const Stream = require('./../Utilities/Stream');
+const Stream = require('./../utilities/Stream');
 
 class InstagramPlugin extends Plugin {
 

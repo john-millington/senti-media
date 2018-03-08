@@ -4,7 +4,7 @@ const TwitterAPI = require('twitter');
 const qs = require('qs');
 
 const Plugin = require('./Plugin');
-const Stream = require('./../Utilities/Stream');
+const Stream = require('./../utilities/Stream');
 
 const DEFAULT_PAGE_SIZE = 100;
 

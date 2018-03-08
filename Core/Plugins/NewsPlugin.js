@@ -1,11 +1,13 @@
 const Config = require('./../../senti.config.js');
 const NewsSources = require('./data/sources.json');
 
+const curl = require('curl');
+const unfluff = require('unfluff');
 const NewsAPI = require('newsapi');
 const _ = require('lodash');
 
 const Plugin = require('./Plugin');
-const Stream = require('./../Utilities/Stream');
+const Stream = require('./../utilities/Stream');
 
 const DEFAULT_PAGE_SIZE = 100;
 
@@ -18,16 +20,40 @@ class NewsPlugin extends Plugin {
 
     }
 
-    postprocess(articles) {
+    articles(articles) {
 
-        return articles.map(article => {
-            return {
-                text: article.title + '. ' + article.description,
-                metadata: {
-                    type: 'senti.news',
-                    ...article
+        let promises = [];
+        articles.forEach(article => {
+            promises.push(this.extract(article));
+        });
+
+        return new Promise(resolve => {
+            Promise.all(promises).then(articles => {
+                resolve(articles);
+            });
+        });
+
+    }
+
+    extract(article) {
+
+        return new Promise(resolve => {
+            curl.get(article.url, {}, (error, response, body) => {
+                let resolution = {
+                        text: article.title + '. ' + article.description,
+                        metadata: {
+                            type: 'senti.news',
+                            ...article
+                        }
+                    };
+
+                if (body) {
+                    let parsed = unfluff(body);
+                    resolution.text = parsed.text;
                 }
-            }
+
+                resolve(resolution);
+            });
         });
 
     }
@@ -44,18 +70,20 @@ class NewsPlugin extends Plugin {
                 if (response.status === 'error') {
                     reject(response);
                 } else {
-                    give(this.postprocess(response.articles));
+                    this.articles(response.articles).then(articles => {
+                        give(articles);
+                    
+                        processedResults += response.articles.length;
+                        if (response.totalResults > processedResults) {
+                            params.page++;
 
-                    processedResults += response.articles.length;
-                    if (response.totalResults > processedResults) {
-                        params.page++;
-
-                        next(() => {
-                            this.client.v2.everything(params).then(handle);
-                        });
-                    } else {
-                        terminate();
-                    }
+                            next(() => {
+                                this.client.v2.everything(params).then(handle);
+                            });
+                        } else {
+                            terminate();
+                        }
+                    });
                 }
             }
 
