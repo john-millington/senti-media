@@ -44,9 +44,9 @@ class TwitterPlugin extends Plugin {
 
     }
 
-    search(terms, options = {}) {
+    search(terms, options = { operator: 'AND' }) {
 
-        terms = terms instanceof Array ? terms.join(' ') : terms;
+        terms = terms instanceof Array ? terms.join(` ${options.operator} `) : terms;
 
         return new Stream((give, reject, terminate, next) => {
             let params = Object.assign(this.transform(options), { q: terms, tweet_mode: 'extended' });

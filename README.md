@@ -1,6 +1,6 @@
 # senti-social
 
-Senti Social is an extensible framework for sentiment analysis on media sources. It comes with plugins for twitter and [NewsAPI](https://newsapi.org). The framework uses [AWS Comprehend](https://aws.amazon.com/comprehend), along with [compromise](http://compromise.cool/) to extract key phrases and do sentiment analysis.
+Senti Social is an extensible framework for sentiment analysis and NLP on media sources. It comes with plugins for the [Twitter API](https://developer.twitter.com/) and [NewsAPI](https://newsapi.org). The framework uses [AWS Comprehend](https://aws.amazon.com/comprehend), along with [compromise](http://compromise.cool/) to extract key phrases and do sentiment analysis.
 
 It is designed for use with node, and may have issues running in a browser.
 
@@ -12,7 +12,7 @@ It is designed for use with node, and may have issues running in a browser.
 npm install senti-media
 ```
 
-### Creating a instance of the Senti engine
+### Creating an instance of the Senti engine
 
 ```
 const Engine = require('senti-media/engine');
@@ -64,8 +64,24 @@ SentiEngine.middleware(new Raw());
 ### Starting the engine
 
 ```
-SentiEngine.start('<search_term>', options).take((update) => {
+let SentiStream = SentiEngine.start('<search_term>', options);
+
+SentiStream.take((update) => {
     console.log(update);
+});
+```
+
+Starting the engine returns a Stream object. Conceptually the Stream object works similarly to a Promise, you can pass your update function to the take method on the Stream and it will updates for all media sources being run by the engine. Depending on the media type and the middleware used, this will include some metadata about the original source of the text.
+
+A stream also has catch and finish methods which are called when exceptions occur or when the stream is terminated:
+
+```
+SentiStream.catch((exception) => {
+    console.log(exception);
+});
+
+SentiStream.finish(() => {
+    console.log('Stream terminated');
 });
 ```
 

@@ -57,9 +57,9 @@ class NewsPlugin extends Plugin {
 
     }
 
-    search(terms, options = {}) {
+    search(terms, options = { operator: 'AND' }) {
 
-        terms = terms instanceof Array ? terms.join(' OR ') : terms;
+        terms = terms instanceof Array ? terms.join(` ${options.operator} `) : terms;
 
         let processedResults = 0;
         return new Stream((give, reject, terminate, next) => {
