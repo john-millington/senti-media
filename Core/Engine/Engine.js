@@ -24,9 +24,9 @@ class Engine {
 
     }
 
-    start(terms, options) {
+    start(terms, options = {}) {
 
-        options = _.pick(options || {}, [
+        options = _.pick(options, [
             'since_time',
             'until_time',
             'language',
@@ -40,7 +40,10 @@ class Engine {
 
         return new Stream((give, reject, terminate, next) => {
             Stream.all(streams).throttle(500).take((results) => {
+                console.log(results);
                 this.senti.process(results).then(processed => {
+                    console.log(processed);
+
                     let honed = {};
                     this.middleware.forEach(middleware => {
                         honed[middleware.id()] = middleware.run(terms, processed);

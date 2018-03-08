@@ -38,7 +38,7 @@ class NewsPlugin extends Plugin {
 
         let processedResults = 0;
         return new Stream((give, reject, terminate, next) => {
-            let params = Object.assign(this.options(options), { q: terms, page: 1 });
+            let params = Object.assign(this.transform(options), { q: terms, page: 1 });
 
             const handle = (response) => {
                 if (response.status === 'error') {
