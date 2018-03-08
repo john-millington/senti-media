@@ -1,13 +1,13 @@
 const _ = require('lodash');
 
 const Senti = require('./Senti');
-const Stream = require('./../Utilities/Stream');
+const Stream = require('./../utilities/Stream');
 
 class Engine {
 
     constructor(config) {
 
-        this.senti = new Senti();
+        this.senti = new Senti(config.aws);
 
         this.plugins = config && config.plugins || [];
         this.middleware = config && config.middleware || [];

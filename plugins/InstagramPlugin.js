@@ -1,18 +1,17 @@
-const Config = require('./../../senti.config.js');
-
 const Instagram = require('instagram');
 
 const Plugin = require('./Plugin');
-const Stream = require('./../Utilities/Stream');
+const Stream = require('./../utilities/Stream');
 
 class InstagramPlugin extends Plugin {
 
-    constructor() {
+    constructor(config) {
+
         super(...arguments);
 
         this.client = Instagram.createClient(
-            config.InstagramAPI.clientId,
-            config.InstagramAPI.clientSecret
+            config.client_id,
+            config.client_secret
         );
 
     }
