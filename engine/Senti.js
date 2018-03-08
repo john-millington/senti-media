@@ -1,5 +1,3 @@
-const Config = require('./../../senti.config.js');
-
 const AWS = require('aws-sdk');
 const nlp = require('compromise');
 const _ = require('lodash');
@@ -8,14 +6,9 @@ const AWS_TEXT_LIST_LIMIT = 25;
 
 class Senti {
 
-    constructor() {
+    constructor(config) {
 
-        AWS.config.update({
-            accessKeyId: Config.AWS.accessKeyId,
-            secretAccessKey: Config.AWS.secretAccessKey,
-            region: Config.AWS.region
-        });
-
+        AWS.config.update(config);
         this.service = new AWS.Comprehend();
 
     }

@@ -1,4 +1,3 @@
-const Config = require('./../../senti.config.js');
 const NewsSources = require('./data/sources.json');
 
 const curl = require('curl');
@@ -13,10 +12,10 @@ const DEFAULT_PAGE_SIZE = 100;
 
 class NewsPlugin extends Plugin {
 
-    constructor() {
+    constructor(config) {
 
         super(...arguments);
-        this.client = new NewsAPI(Config.NewsAPI.api_key);
+        this.client = new NewsAPI(config.api_key);
 
     }
 
@@ -40,12 +39,12 @@ class NewsPlugin extends Plugin {
         return new Promise(resolve => {
             curl.get(article.url, {}, (error, response, body) => {
                 let resolution = {
-                        text: article.title + '. ' + article.description,
-                        metadata: {
-                            type: 'senti.news',
-                            ...article
-                        }
-                    };
+                    text: article.title + '. ' + article.description,
+                    metadata: {
+                        type: 'senti.news',
+                        ...article
+                    }
+                };
 
                 if (body) {
                     let parsed = unfluff(body);
@@ -72,7 +71,7 @@ class NewsPlugin extends Plugin {
                 } else {
                     this.articles(response.articles).then(articles => {
                         give(articles);
-                    
+
                         processedResults += response.articles.length;
                         if (response.totalResults > processedResults) {
                             params.page++;

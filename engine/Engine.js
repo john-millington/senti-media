@@ -7,7 +7,7 @@ class Engine {
 
     constructor(config) {
 
-        this.senti = new Senti();
+        this.senti = new Senti(config.aws);
 
         this.plugins = config && config.plugins || [];
         this.middleware = config && config.middleware || [];

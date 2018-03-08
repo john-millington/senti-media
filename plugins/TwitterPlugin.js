@@ -1,5 +1,3 @@
-const Config = require('./../../senti.config.js');
-
 const TwitterAPI = require('twitter');
 const qs = require('qs');
 
@@ -10,16 +8,10 @@ const DEFAULT_PAGE_SIZE = 100;
 
 class TwitterPlugin extends Plugin {
 
-    constructor() {
+    constructor(config) {
 
         super(...arguments);
-
-        this.client = new TwitterAPI({
-            consumer_key: Config.TwitterAPI.consumer_key,
-            consumer_secret: Config.TwitterAPI.consumer_secret,
-            access_token_key: Config.TwitterAPI.access_token_key,
-            access_token_secret: Config.TwitterAPI.access_token_secret
-        });
+        this.client = new TwitterAPI(config);
 
     }
 
