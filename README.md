@@ -1,6 +1,6 @@
-# senti-social
+# senti-media
 
-Senti Social is an extensible framework for sentiment analysis and NLP on media sources. It comes with plugins for the [Twitter API](https://developer.twitter.com/) and [NewsAPI](https://newsapi.org). The framework uses [AWS Comprehend](https://aws.amazon.com/comprehend), along with [compromise](http://compromise.cool/) to extract key phrases and do sentiment analysis.
+Senti is an extensible framework for sentiment analysis and NLP on media sources. It comes with plugins for the [Twitter API](https://developer.twitter.com/) and [NewsAPI](https://newsapi.org). The framework uses [AWS Comprehend](https://aws.amazon.com/comprehend), along with [compromise](http://compromise.cool/) to extract key phrases and do sentiment analysis.
 
 It is designed for use with node, and may have issues running in a browser.
 
