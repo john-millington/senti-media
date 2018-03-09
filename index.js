@@ -1,13 +1,11 @@
-const config = require('./config');
 const engine = require('./engine');
 const middleware = require('./middleware');
-const plugins = require('./plugins');
+const providers = require('./providers');
 const utilities = require('./utilities');
 
 module.exports = {
-    config,
     engine,
     middleware,
-    plugins,
+    providers,
     utilities
 };
