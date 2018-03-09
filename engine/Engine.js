@@ -31,7 +31,8 @@ class Engine {
             'to',
             'count',
             'language',
-            'country'
+            'country',
+            'operator'
         ]);
 
         let streams = [];
