@@ -1,9 +1,9 @@
 const Instagram = require('instagram');
 
-const Plugin = require('./Plugin');
+const Provider = require('./Provider');
 const Stream = require('./../utilities/Stream');
 
-class InstagramPlugin extends Plugin {
+class InstagramProvider extends Provider {
 
     constructor(config) {
 
@@ -33,4 +33,4 @@ class InstagramPlugin extends Plugin {
 
 }
 
-module.exports = InstagramPlugin;
+module.exports = InstagramProvider;

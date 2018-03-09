@@ -1,6 +1,6 @@
 const Stream = require('./../utilities/Stream');
 
-class Plugin {
+class Provider {
 
     search() {
         return new Stream();
@@ -8,4 +8,4 @@ class Plugin {
 
 }
 
-module.exports = Plugin;
+module.exports = Provider;

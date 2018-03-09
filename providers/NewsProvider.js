@@ -5,12 +5,12 @@ const unfluff = require('unfluff');
 const NewsAPI = require('newsapi');
 const _ = require('lodash');
 
-const Plugin = require('./Plugin');
+const Provider = require('./Provider');
 const Stream = require('./../utilities/Stream');
 
 const DEFAULT_PAGE_SIZE = 100;
 
-class NewsPlugin extends Plugin {
+class NewsProvider extends Provider {
 
     constructor(config) {
 
@@ -116,4 +116,4 @@ class NewsPlugin extends Plugin {
 
 }
 
-module.exports = NewsPlugin;
+module.exports = NewsProvider;

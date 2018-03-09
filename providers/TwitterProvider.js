@@ -1,12 +1,12 @@
 const TwitterAPI = require('twitter');
 const qs = require('qs');
 
-const Plugin = require('./Plugin');
+const Provider = require('./Provider');
 const Stream = require('./../utilities/Stream');
 
 const DEFAULT_PAGE_SIZE = 100;
 
-class TwitterPlugin extends Plugin {
+class TwitterProvider extends Provider {
 
     constructor(config) {
 
@@ -102,4 +102,4 @@ class TwitterPlugin extends Plugin {
 
 }
 
-module.exports = TwitterPlugin;
+module.exports = TwitterProvider;

@@ -9,15 +9,15 @@ class Engine {
 
         this.senti = new Senti(config.aws);
 
-        this.plugins = config && config.plugins || [];
+        this.providers = config && config.providers || [];
         this.middleware = config && config.middleware || [];
 
     }
 
-    plugin(plugin) {
+    provider(provider) {
 
-        if (this.plugins.indexOf(plugin) === -1) {
-            this.plugins.push(plugin);
+        if (this.providers.indexOf(provider) === -1) {
+            this.providers.push(provider);
         }
 
         return this;
@@ -36,19 +36,23 @@ class Engine {
         ]);
 
         let streams = [];
-        this.plugins.forEach(plugin => {
-            streams.push(plugin.search(terms, options));
+        this.providers.forEach(provider => {
+            streams.push(provider.search(terms, options));
         });
 
         return new Stream((give, reject, terminate, next) => {
             Stream.all(streams).throttle(500).take((results) => {
                 this.senti.process(results).then(processed => {
-                    let extractions = {};
-                    this.middleware.forEach(middleware => {
-                        extractions[middleware.id()] = middleware.run(terms, processed);
-                    });
+                    let records = {
+                        records: processed
+                    };
 
-                    give(extractions);
+                    let i = this.middleware.length;
+                    while (i--) {
+                        records = this.middleware[i](terms, records);
+                    }
+
+                    give(records);
                 });
             }).finish(() => {
                 terminate();

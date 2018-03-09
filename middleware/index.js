@@ -1,11 +1,9 @@
-const Middleware = require('./Middleware');
-const Negativity = require('./Negativity');
-const Positivity = require('./Positivity');
-const Raw = require('./Raw');
+const inference = require('./inference');
+const negativity = require('./negativity');
+const positivity = require('./positivity');
 
 module.exports = {
-    Middleware,
-    Negativity,
-    Positivity,
-    Raw
+    inference,
+    negativity,
+    positivity
 };
