@@ -1,13 +1,21 @@
 {
   "name": "senti-media",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/john-millington/senti-media.git"
+  },
   "author": "John Millington",
-  "license": "ISC",
+  "license": "GNU",
+  "bugs": {
+    "url": "https://github.com/john-millington/senti-media/issues"
+  },
+  "homepage": "https://github.com/john-millington/senti-media#readme",
   "dependencies": {
     "aws-sdk": "^2.205.0",
     "compromise": "^11.5.2",
