@@ -20,10 +20,8 @@
     "aws-sdk": "^2.205.0",
     "compromise": "^11.5.2",
     "curl": "^0.1.4",
-    "instagram": "0.0.4",
     "lodash": "^4.17.5",
     "newsapi": "^2.2.0",
-    "node-instagram": "^4.1.0",
     "qs": "^6.5.1",
     "twitter": "^1.7.1",
     "unfluff": "^3.0.0"
