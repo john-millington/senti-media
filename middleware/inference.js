@@ -4,7 +4,6 @@ const PRECEEDING_CONTEXT_PRONOUNS = [
     'they',
     'he',
     'she',
-    'we',
     'it',
     'them',
     'those'
@@ -44,15 +43,24 @@ const inference = () => {
         results.records.forEach((record, i) => {
             if (record && record.senti) {
                 record.senti.forEach((senti, index) => {
-                    if (!senti.topics.length && record.senti[index - 1]) {
-                        let topics = [],
-                            pronouns = nlp(senti.text).match('#Pronoun').terms().data();
+                    let topics = senti.topics;
+                    if (record.senti[index - 1]) {
+                        let pronouns = nlp(senti.text).match('#Pronoun').terms().data(),
+                            earliest = Infinity;
+
+                        topics.forEach(topic => {
+                            if (topic.start < earliest) {
+                                earliest = topic.start;
+                            }
+                        });
 
                         pronouns.forEach(pronoun => {
-                            if (PRECEEDING_CONTEXT_PRONOUNS.indexOf(pronoun.text) > -1) {
-                                const inferred = context(pronoun, record.senti[index - 1]);
-                                if (inferred) {
-                                    topics.push(inferred);
+                            if (senti.text.indexOf(pronoun.text) < earliest) {
+                                if (PRECEEDING_CONTEXT_PRONOUNS.indexOf(pronoun.text) > -1) {
+                                    const inferred = context(pronoun, record.senti[index - 1]);
+                                    if (inferred) {
+                                        topics.unshift(inferred);
+                                    }
                                 }
                             }
                         });
