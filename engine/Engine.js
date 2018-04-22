@@ -1,16 +1,18 @@
 const _ = require('lodash');
 
-const Senti = require('./Senti');
 const Stream = require('./../utilities/Stream');
+const senti = require('./../middleware/senti');
 
 class Engine {
 
-    constructor(config) {
+    constructor(config = {}) {
 
-        this.senti = new Senti(config.aws);
+        this.providers = config.providers || [];
+        this.middleware = config.middleware || [];
 
-        this.providers = config && config.providers || [];
-        this.middleware = config && config.middleware || [];
+        if (config.aws) {
+            this.middleware.unshift(senti(config.aws));
+        }
 
     }
 
@@ -41,19 +43,17 @@ class Engine {
         });
 
         return new Stream((give, reject, terminate, next) => {
-            Stream.all(streams).throttle(500).take((results) => {
-                this.senti.process(results).then(processed => {
-                    let records = {
-                        records: processed
-                    };
+            Stream.all(streams).throttle(500).take(async (results) => {
+                let records = {
+                    records: results
+                };
 
-                    let i = this.middleware.length;
-                    while (i--) {
-                        records = this.middleware[i](terms, records);
-                    }
+                let i = this.middleware.length;
+                while (i--) {
+                    records = await this.middleware[i](terms, records);
+                }
 
-                    give(records);
-                });
+                give(records);
             }).finish(() => {
                 terminate();
             });
