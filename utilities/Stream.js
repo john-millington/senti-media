@@ -21,26 +21,35 @@ class Stream {
         this.terminate = this.terminate.bind(this);
 
         this.queue = [];
+
+        this.handlers = {
+            catch: [],
+            finish: [],
+            take: []
+        };
+        
         this.throttle(DEFAULT_STREAM_THROTTLE);
 
-        handler(this.give, this.reject, this.terminate, this.next);
+        setTimeout(() => {
+            handler(this.give, this.reject, this.terminate, this.next);
+        }, 0);
 
     }
 
-    catch(_catch) {
+    catch(cat) {
 
-        if (typeof _catch === 'function') {
-            this._catch = _catch;
+        if (typeof cat === 'function') {
+            this.handlers.catch.push(cat);
         }
 
         return this;
 
     }
 
-    finish(_finish) {
+    finish(finish) {
 
-        if (typeof _finish === 'function') {
-            this._finish = _finish;
+        if (typeof finish === 'function') {
+            this.handlers.finish.push(finish);
         }
 
         return this;
@@ -49,9 +58,7 @@ class Stream {
 
     give() {
 
-        if (this._take) {
-            this._take(...arguments);
-        }
+        this.trigger('take', [...arguments]);
 
     }
 
@@ -94,10 +101,7 @@ class Stream {
 
     reject() {
 
-        if (this._catch) {
-            this._catch(...arguments);
-        }
-
+        this.trigger('catch', [...arguments]);
         this.terminate();
 
     }
@@ -110,10 +114,10 @@ class Stream {
 
     }
 
-    take(_take) {
+    take(take) {
 
-        if (typeof _take === 'function') {
-            this._take = _take;
+        if (typeof take === 'function') {
+            this.handlers.take.push(take);
         }
 
         return this;
@@ -122,10 +126,7 @@ class Stream {
 
     terminate() {
 
-        if (this._finish) {
-            this._finish(...arguments);
-        }
-
+        this.trigger('finish', [...arguments]);
         clearInterval(this.throttle_interval);
 
     }
@@ -140,6 +141,14 @@ class Stream {
         }, this.last_throttle_interval);
 
         return this;
+
+    }
+
+    trigger(type, args) {
+
+        if (this.handlers[type]) {
+            this.handlers[type].forEach(handle => handle(...args));
+        }
 
     }
 
