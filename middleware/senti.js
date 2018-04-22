@@ -1,13 +1,14 @@
-const SentiEngine = require('./../engine/Senti');
+const SentiEngine = require("./../engine/Senti");
 
-const senti = (config) => {
+const senti = config => {
     const SentimentEngine = new SentiEngine(config);
-    
+
     return async (terms, records) => {
+        console.log(records);
         return {
-            records: await Processor.process(records.records)
+            records: await SentimentEngine.process(records.records)
         };
     };
-}
+};
 
 module.exports = senti;

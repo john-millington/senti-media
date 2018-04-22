@@ -1,26 +1,22 @@
-const NewsSources = require('./data/sources.json');
+const NewsSources = require("./data/sources.json");
 
-const curl = require('curl');
-const unfluff = require('unfluff');
-const NewsAPI = require('newsapi');
-const _ = require('lodash');
+const curl = require("curl");
+const unfluff = require("unfluff");
+const NewsAPI = require("newsapi");
+const _ = require("lodash");
 
-const Provider = require('./Provider');
-const Stream = require('./../utilities/Stream');
+const Provider = require("./Provider");
+const Stream = require("./../utilities/Stream");
 
 const DEFAULT_PAGE_SIZE = 100;
 
 class NewsProvider extends Provider {
-
     constructor(config) {
-
         super(...arguments);
         this.client = new NewsAPI(config.api_key);
-
     }
 
     articles(articles) {
-
         let promises = [];
         articles.forEach(article => {
             promises.push(this.extract(article));
@@ -31,17 +27,15 @@ class NewsProvider extends Provider {
                 resolve(articles);
             });
         });
-
     }
 
     extract(article) {
-
         return new Promise(resolve => {
             curl.get(article.url, {}, (error, response, body) => {
                 let resolution = {
-                    text: article.title + '. ' + article.description,
+                    text: article.title + ". " + article.description,
                     metadata: {
-                        type: 'senti.news',
+                        type: "senti.news",
                         ...article
                     }
                 };
@@ -54,19 +48,17 @@ class NewsProvider extends Provider {
                 resolve(resolution);
             });
         });
-
     }
 
-    search(terms, options = { operator: 'AND' }) {
-
+    search(terms, options = { operator: "AND" }) {
         terms = terms instanceof Array ? terms.join(` ${options.operator} `) : terms;
 
         let processedResults = 0;
         return new Stream((give, reject, terminate, next) => {
             let params = Object.assign(this.transform(options), { q: terms, page: 1 });
 
-            const handle = (response) => {
-                if (response.status === 'error') {
+            const handle = response => {
+                if (response.status === "error") {
                     reject(response);
                 } else {
                     this.articles(response.articles).then(articles => {
@@ -84,15 +76,13 @@ class NewsProvider extends Provider {
                         }
                     });
                 }
-            }
+            };
 
             this.client.v2.everything(params).then(handle);
         });
-
     }
 
     transform(options = {}) {
-
         let rectified = {
             language: options.language,
             pageSize: options.count || DEFAULT_PAGE_SIZE
@@ -107,13 +97,13 @@ class NewsProvider extends Provider {
         }
 
         if (options.country) {
-            rectified.sources = _.filter(NewsSources.sources, source => source.country === options.country).map(source => source.id).join(',');
+            rectified.sources = _.filter(NewsSources.sources, source => source.country === options.country)
+                .map(source => source.id)
+                .join(",");
         }
 
         return rectified;
-
     }
-
 }
 
 module.exports = NewsProvider;
